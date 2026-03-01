@@ -1,664 +1,727 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GIF → SVG Animado | File Converter</title>
 
-    <!-- Tailwind vía CDN para simplicidad -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                red: "#ef4444",
-              },
-              cream: {
-                50: "#fdf7ec",
-                100: "#f7ecd8",
-                200: "#f0e0c2",
-              },
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GIF → SVG Animado | File Converter</title>
+
+  <!-- Tailwind vía CDN para simplicidad -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              red: "#ef4444",
+            },
+            cream: {
+              50: "#fdf7ec",
+              100: "#f7ecd8",
+              200: "#f0e0c2",
             },
           },
         },
-      };
-    </script>
-  </head>
-  <body
-    class="min-h-screen flex flex-col bg-cream-50 text-slate-900 transition-colors duration-300 dark:bg-black dark:text-slate-50"
-  >
-    <div class="flex-1 flex flex-col">
-      <!-- Navbar -->
-      <header
-        class="border-b border-black/5 bg-cream-50/80 backdrop-blur-md dark:border-white/10 dark:bg-black/80"
-      >
-        <div
-          class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-4"
-        >
-          <div class="flex items-center gap-3">
-            <div
-              class="h-9 w-9 rounded-xl bg-black flex items-center justify-center border border-black/10 dark:border-white/10"
-            >
-              <span class="text-xs font-semibold tracking-tight text-cream-50"
-                >KR</span
-              >
-            </div>
-            <div>
-              <p class="text-sm font-semibold tracking-tight">
-                Minimal Converter
-              </p>
-              <p
-                class="text-[11px] uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400"
-              >
-                GIF · SVG · PNG
-              </p>
-            </div>
-          </div>
+      },
+    };
+  </script>
+</head>
 
-          <div class="flex items-center gap-4">
-            <nav
-              class="hidden sm:flex items-center gap-1 text-[11px] font-medium rounded-full border border-black/5 bg-white/80 px-1 py-0.5 shadow-sm dark:border-white/10 dark:bg-black/80"
-            >
-              <a
-                href="{{ url_for('svg_view') }}"
-                class="inline-flex items-center gap-1 rounded-full px-3 py-1
+<body
+  class="min-h-screen flex flex-col bg-cream-50 text-slate-900 transition-colors duration-300 dark:bg-black dark:text-slate-50">
+  <div class="flex-1 flex flex-col">
+    <!-- Navbar -->
+    <header class="border-b border-black/5 bg-cream-50/80 backdrop-blur-md dark:border-white/10 dark:bg-black/80">
+      <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div
+            class="h-9 w-9 rounded-xl bg-black flex items-center justify-center border border-black/10 dark:border-white/10">
+            <span class="text-xs font-semibold tracking-tight text-cream-50">KR</span>
+          </div>
+          <div>
+            <p class="text-sm font-semibold tracking-tight">
+              Minimal Converter
+            </p>
+            <p class="text-[11px] uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">
+              GIF · SVG · PNG
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <nav
+            class="hidden sm:flex items-center gap-1 text-[11px] font-medium rounded-full border border-black/5 bg-white/80 px-1 py-0.5 shadow-sm dark:border-white/10 dark:bg-black/80">
+            <a href="{{ url_for('svg_view') }}" class="inline-flex items-center gap-1 rounded-full px-3 py-1
                   {% if current_view == 'svg' %}
                     text-cream-50 bg-black dark:bg-white dark:text-black
                   {% else %}
                     text-slate-600 hover:text-black hover:bg-black/5 dark:text-slate-300 dark:hover:text-cream-50 dark:hover:bg-white/10
-                  {% endif %}"
-              >
-                <span>SVG</span>
-              </a>
-              <a
-                href="{{ url_for('gif_view') }}"
-                class="inline-flex items-center gap-1 rounded-full px-3 py-1
+                  {% endif %}">
+              <span>SVG</span>
+            </a>
+            <a href="{{ url_for('gif_view') }}" class="inline-flex items-center gap-1 rounded-full px-3 py-1
                   {% if current_view == 'gif' %}
                     text-cream-50 bg-black dark:bg-white dark:text-black
                   {% else %}
                     text-slate-600 hover:text-black hover:bg-black/5 dark:text-slate-300 dark:hover:text-cream-50 dark:hover:bg-white/10
-                  {% endif %}"
-              >
-                <span>GIF</span>
-              </a>
-              <a
-                href="{{ url_for('png_view') }}"
-                class="inline-flex items-center gap-1 rounded-full px-3 py-1
+                  {% endif %}">
+              <span>GIF</span>
+            </a>
+            <a href="{{ url_for('png_view') }}" class="inline-flex items-center gap-1 rounded-full px-3 py-1
                   {% if current_view == 'png' %}
                     text-cream-50 bg-black dark:bg-white dark:text-black
                   {% else %}
                     text-slate-600 hover:text-black hover:bg-black/5 dark:text-slate-300 dark:hover:text-cream-50 dark:hover:bg-white/10
-                  {% endif %}"
-              >
-                <span>PNG</span>
-              </a>
-            </nav>
+                  {% endif %}">
+              <span>PNG</span>
+            </a>
+          </nav>
 
-            <button
-              id="theme-toggle"
-              type="button"
-              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-black/10 bg-white shadow-sm text-xs text-slate-700 hover:bg-black hover:text-cream-50 dark:border-white/15 dark:bg-black dark:text-slate-200 dark:hover:bg-white dark:hover:text-black transition-colors"
-              aria-label="Cambiar tema"
-            >
-              ●
-            </button>
-          </div>
+          <button id="theme-toggle" type="button"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-black/10 bg-white shadow-sm text-xs text-slate-700 hover:bg-black hover:text-cream-50 dark:border-white/15 dark:bg-black dark:text-slate-200 dark:hover:bg-white dark:hover:text-black transition-colors"
+            aria-label="Cambiar tema">
+            ●
+          </button>
         </div>
-      </header>
+      </div>
+    </header>
 
-      <!-- Main -->
-      <main class="flex-1">
-        <div class="max-w-5xl mx-auto px-4 py-10 md:py-14 space-y-10">
-          <!-- Hero / Home: de qué va la página -->
-          <section class="space-y-4">
-            <h1
-              class="text-3xl md:text-4xl lg:text-[2.6rem] font-semibold tracking-tight"
-            >
-              Convierte y limpia tus
-              <span class="text-brand-red">imágenes</span>
-              de forma minimalista.
-            </h1>
-            <p
-              class="text-sm md:text-base text-slate-600 max-w-xl dark:text-slate-300"
-            >
-              Esta página está pensada para creadores y desarrolladores que
-              quieren trabajar con GIF, SVG y PNG de forma sencilla: quitar
-              fondos molestos y convertir entre formatos sin complicaciones.
-            </p>
-            <div
-              class="inline-flex flex-wrap gap-2 text-[11px] text-slate-500 dark:text-slate-400"
-            >
-              <span
-                class="rounded-full border border-black/5 bg-white px-3 py-1 dark:border-white/10 dark:bg-black/60"
-                >Modo claro y oscuro</span
-              >
-              <span
-                class="rounded-full border border-black/5 bg-white px-3 py-1 dark:border-white/10 dark:bg-black/60"
-                >Minimalista y responsiva</span
-              >
-              <span
-                class="rounded-full border border-black/5 bg-white px-3 py-1 dark:border-white/10 dark:bg-black/60"
-                >Foco en quitar fondo y convertir</span
-              >
-            </div>
-          </section>
+    <!-- Main -->
+    <main class="flex-1">
+      <div class="max-w-5xl mx-auto px-4 py-10 md:py-14 space-y-10">
+        <!-- Hero / Home: de qué va la página -->
+        <section class="space-y-4">
+          <h1 class="text-3xl md:text-4xl lg:text-[2.6rem] font-semibold tracking-tight">
+            Convierte y limpia tus
+            <span class="text-brand-red">imágenes</span>
+            de forma minimalista.
+          </h1>
+          <p class="text-sm md:text-base text-slate-600 max-w-xl dark:text-slate-300">
+            Esta página está pensada para creadores y desarrolladores que
+            quieren trabajar con GIF, SVG y PNG de forma sencilla: quitar
+            fondos molestos y convertir entre formatos sin complicaciones.
+          </p>
+          <div class="inline-flex flex-wrap gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+            <span
+              class="rounded-full border border-black/5 bg-white px-3 py-1 dark:border-white/10 dark:bg-black/60">Modo
+              claro y oscuro</span>
+            <span
+              class="rounded-full border border-black/5 bg-white px-3 py-1 dark:border-white/10 dark:bg-black/60">Minimalista
+              y responsiva</span>
+            <span
+              class="rounded-full border border-black/5 bg-white px-3 py-1 dark:border-white/10 dark:bg-black/60">Foco
+              en quitar fondo y convertir</span>
+          </div>
+        </section>
 
-          <!-- Navegación principal móvil -->
-          <nav
-            class="flex sm:hidden items-center gap-2 text-[11px] font-medium"
-          >
-            <a
-              href="{{ url_for('svg_view') }}"
-              class="inline-flex flex-1 items-center justify-center rounded-full border px-3 py-1
+        <!-- Navegación principal móvil -->
+        <nav class="flex sm:hidden items-center gap-2 text-[11px] font-medium">
+          <a href="{{ url_for('svg_view') }}" class="inline-flex flex-1 items-center justify-center rounded-full border px-3 py-1
                 {% if current_view == 'svg' %}
                   border-black bg-black text-cream-50 dark:border-white dark:bg-white dark:text-black
                 {% else %}
                   border-black/10 bg-white text-slate-600 hover:border-black/40 hover:text-black dark:border-white/20 dark:bg-black/60 dark:text-slate-300 dark:hover:border-white/60 dark:hover:text-cream-50
-                {% endif %}"
-            >
-              SVG
-            </a>
-            <a
-              href="{{ url_for('gif_view') }}"
-              class="inline-flex flex-1 items-center justify-center rounded-full border px-3 py-1
+                {% endif %}">
+            SVG
+          </a>
+          <a href="{{ url_for('gif_view') }}" class="inline-flex flex-1 items-center justify-center rounded-full border px-3 py-1
                 {% if current_view == 'gif' %}
                   border-black bg-black text-cream-50 dark:border-white dark:bg-white dark:text-black
                 {% else %}
                   border-black/10 bg-white text-slate-600 hover:border-black/40 hover:text-black dark:border-white/20 dark:bg-black/60 dark:text-slate-300 dark:hover:border-white/60 dark:hover:text-cream-50
-                {% endif %}"
-            >
-              GIF
-            </a>
-            <a
-              href="{{ url_for('png_view') }}"
-              class="inline-flex flex-1 items-center justify-center rounded-full border px-3 py-1
+                {% endif %}">
+            GIF
+          </a>
+          <a href="{{ url_for('png_view') }}" class="inline-flex flex-1 items-center justify-center rounded-full border px-3 py-1
                 {% if current_view == 'png' %}
                   border-black bg-black text-cream-50 dark:border-white dark:bg-white dark:text-black
                 {% else %}
                   border-black/10 bg-white text-slate-600 hover:border-black/40 hover:text-black dark:border-white/20 dark:bg-black/60 dark:text-slate-300 dark:hover:border-white/60 dark:hover:text-cream-50
-                {% endif %}"
-            >
-              PNG
-            </a>
-          </nav>
+                {% endif %}">
+            PNG
+          </a>
+        </nav>
 
-          <!-- Paneles: SVG / GIF / PNG -->
-          <section class="space-y-8">
-            <!-- Panel SVG -->
-            {% if current_view == 'svg' %}
-            <div
-              class="rounded-3xl border border-black/5 bg-white/80 p-5 md:p-6 shadow-sm dark:border-white/10 dark:bg-black/70"
-            >
-              <div class="flex flex-col md:flex-row gap-6 md:items-start">
-                <div class="space-y-3 flex-1">
+        <!-- Paneles: SVG / GIF / PNG -->
+        <section class="space-y-8">
+          <!-- Panel SVG -->
+          {% if current_view == 'svg' %}
+          <div
+            class="rounded-3xl border border-black/5 bg-white/80 p-5 md:p-6 shadow-sm dark:border-white/10 dark:bg-black/70">
+            <div class="grid gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+              <div class="space-y-5 flex-1">
+                <div class="space-y-2">
                   <h2 class="text-sm font-semibold tracking-tight">
                     Herramientas para SVG
                   </h2>
-                  <p
-                    class="text-xs md:text-sm text-slate-600 dark:text-slate-300"
-                  >
+                  <p class="text-xs md:text-sm text-slate-600 dark:text-slate-300">
                     Sube un archivo <span class="font-semibold">.svg</span> para
                     limpiar fondos, intentar reducir marcas de agua y convertirlo
                     rápidamente a otros formatos.
                   </p>
                   <div class="flex flex-wrap gap-2 text-[11px]">
                     <span
-                      class="rounded-full border border-black/10 px-3 py-1 text-slate-600 dark:border-white/20 dark:text-slate-300"
-                      >Quitar fondo (SVG)</span
-                    >
+                      class="rounded-full border border-black/10 px-3 py-1 text-slate-600 dark:border-white/20 dark:text-slate-300">Quitar
+                      fondo (SVG)</span>
                     <span
-                      class="rounded-full border border-black/10 px-3 py-1 text-slate-600 dark:border-white/20 dark:text-slate-300"
-                      >Quitar marcas de agua (experimental)</span
-                    >
+                      class="rounded-full border border-black/10 px-3 py-1 text-slate-600 dark:border-white/20 dark:text-slate-300">Quitar
+                      marcas de agua (experimental)</span>
                     <span
-                      class="rounded-full border border-black/10 px-3 py-1 text-slate-600 dark:border-white/20 dark:text-slate-300"
-                      >Convertir a PNG / JPG / WEBP / GIF</span
-                    >
+                      class="rounded-full border border-black/10 px-3 py-1 text-slate-600 dark:border-white/20 dark:text-slate-300">Convertir
+                      a PNG / JPG / WEBP / GIF</span>
                   </div>
                 </div>
-                <div
-                  class="flex-1 space-y-3 text-[11px] text-slate-500 dark:text-slate-400"
-                >
-                  <form
-                    action="{{ url_for('svg_view') }}"
-                    method="POST"
-                    enctype="multipart/form-data"
-                    class="space-y-4"
-                  >
-                    <div
-                      class="relative group rounded-2xl border border-dashed border-black/10 bg-cream-100/60 hover:border-brand-red/60 hover:bg-cream-100 transition-all duration-200 overflow-hidden dark:border-white/20 dark:bg-black/40 dark:hover:border-brand-red/70"
-                    >
-                      <input
-                        id="svg-file"
-                        name="file"
-                        type="file"
-                        accept=".svg,image/svg+xml"
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                      />
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="space-y-2">
+                  {% for category, message in messages %}
+                  <div class="rounded-xl border px-4 py-3 text-xs flex items-start gap-3
+                          {% if category == 'error' %}
+                            border-brand-red/60 bg-brand-red/5 text-brand-red
+                          {% else %}
+                            border-emerald-500/60 bg-emerald-500/5 text-emerald-300
+                          {% endif %}">
+                    <span class="mt-0.5 text-[10px] uppercase tracking-[0.2em] opacity-70">
+                      {{ 'Error' if category == 'error' else 'Info' }}
+                    </span>
+                    <p class="leading-snug">{{ message }}</p>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <form action="{{ url_for('svg_view') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                  <div
+                    class="relative group rounded-2xl border border-dashed border-black/10 bg-cream-100/60 hover:border-brand-red/60 hover:bg-cream-100 transition-all duration-200 overflow-hidden dark:border-white/20 dark:bg-black/40 dark:hover:border-brand-red/70">
+                    <input id="svg-file" name="file" type="file" accept=".svg,image/svg+xml"
+                      class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                    <div class="pointer-events-none relative px-5 py-7 flex flex-col md:flex-row md:items-center gap-4">
                       <div
-                        class="pointer-events-none relative px-5 py-7 flex flex-col md:flex-row md:items-center gap-4"
-                      >
-                        <div
-                          class="h-10 w-10 rounded-xl bg-black flex items-center justify-center text-cream-50 text-xs font-medium dark:bg-brand-red"
-                        >
-                          SVG
-                        </div>
-                        <div class="space-y-1">
-                          <p class="text-sm font-medium">
-                            Arrastra y suelta tu SVG aquí
-                            <span
-                              class="text-slate-500 font-normal dark:text-slate-300"
-                              >o haz clic para seleccionarlo</span
-                            >
-                          </p>
-                          <p
-                            class="text-[11px] text-slate-500 dark:text-slate-400"
-                          >
-                            Archivos soportados:
-                            <span class="font-semibold">.svg</span>. El resultado
-                            será una imagen rasterizada en el formato elegido.
-                          </p>
-                        </div>
+                        class="h-10 w-10 rounded-xl bg-black flex items-center justify-center text-cream-50 text-xs font-medium dark:bg-brand-red">
+                        SVG
                       </div>
-                    </div>
-
-                    <div class="grid gap-4 md:grid-cols-2">
-                      <div class="space-y-2">
-                        <p
-                          class="uppercase tracking-[0.18em] text-[11px] md:text-xs font-semibold text-slate-500 dark:text-slate-400"
-                        >
-                          Tipo de procesamiento
+                      <div class="space-y-1">
+                        <p class="text-sm font-medium">
+                          Arrastra y suelta tu SVG aquí
+                          <span class="text-slate-500 font-normal dark:text-slate-300">o haz clic para
+                            seleccionarlo</span>
                         </p>
-                        <div class="space-y-1 text-[12px] md:text-xs">
-                          <label class="flex items-center gap-2">
-                            <input
-                              type="radio"
-                              name="processing"
-                              value="bg_remove"
-                              class="h-3.5 w-3.5 rounded-full accent-brand-red"
-                            />
-                            <span>Quitar fondo</span>
-                          </label>
-                          <label class="flex items-center gap-2">
-                            <input
-                              type="radio"
-                              name="processing"
-                              value="watermark_remove"
-                              class="h-3.5 w-3.5 rounded-full accent-brand-red"
-                            />
-                            <span>Quitar marcas de agua (experimental)</span>
-                          </label>
-                          <label class="flex items-center gap-2">
-                            <input
-                              type="radio"
-                              name="processing"
-                              value="none"
-                              class="h-3.5 w-3.5 rounded-full accent-brand-red"
-                              checked
-                            />
-                            <span>Solo convertir (sin limpieza)</span>
-                          </label>
-                        </div>
-                      </div>
-
-                      <div class="space-y-2">
-                        <p
-                          class="uppercase tracking-[0.18em] text-[11px] md:text-xs font-semibold text-slate-500 dark:text-slate-400"
-                        >
-                          Formato de salida
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                          Archivos soportados:
+                          <span class="font-semibold">.svg</span>. El resultado
+                          será una imagen rasterizada en el formato elegido.
                         </p>
-                        <div class="grid grid-cols-2 gap-2 text-[12px] md:text-xs">
-                          <button
-                            type="submit"
-                            name="action"
-                            value="convert_png"
-                            class="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-medium text-slate-800 hover:border-brand-red hover:text-brand-red dark:border-white/20 dark:bg-black/40 dark:text-slate-200 dark:hover:border-brand-red"
-                          >
-                            PNG
-                          </button>
-                          <button
-                            type="submit"
-                            name="action"
-                            value="convert_jpg"
-                            class="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-medium text-slate-800 hover:border-brand-red hover:text-brand-red dark:border-white/20 dark:bg-black/40 dark:text-slate-200 dark:hover:border-brand-red"
-                          >
-                            JPG
-                          </button>
-                          <button
-                            type="submit"
-                            name="action"
-                            value="convert_webp"
-                            class="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-medium text-slate-800 hover:border-brand-red hover:text-brand-red dark:border-white/20 dark:bg-black/40 dark:text-slate-200 dark:hover:border-brand-red"
-                          >
-                            WEBP
-                          </button>
-                          <button
-                            type="submit"
-                            name="action"
-                            value="convert_gif"
-                            class="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-medium text-slate-800 hover:border-brand-red hover:text-brand-red dark:border-white/20 dark:bg-black/40 dark:text-slate-200 dark:hover:border-brand-red"
-                          >
-                            GIF
-                          </button>
-                          <button
-                            type="submit"
-                            name="action"
-                            value="watermark_remove_svg"
-                            class="rounded-full border border-black/10 bg-black px-3 py-2 text-xs font-medium text-cream-50 hover:bg-brand-red dark:border-white/20"
-                          >
-                            SVG (sin marca)
-                          </button>
-                        </div>
-                        <p class="text-[10px]">
-                          Para <span class="font-semibold">Quitar fondo</span> o
-                          <span class="font-semibold">Quitar marcas de agua</span
-                          >, el formato recomendado es PNG. También puedes usar
-                          <span class="font-semibold">SVG (sin marca)</span> para
-                          mantener el mismo formato.
+                        <p id="svg-file-name" class="text-[11px] text-brand-red font-medium hidden">
+                          <!-- Aquí se mostrará el nombre del archivo -->
                         </p>
                       </div>
                     </div>
-                  </form>
+                  </div>
+
+                  <div class="grid gap-4 md:grid-cols-2">
+                    <div class="space-y-2">
+                      <p
+                        class="uppercase tracking-[0.18em] text-[11px] md:text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        Tipo de procesamiento
+                      </p>
+                      <div class="space-y-1 text-[12px] md:text-xs">
+                        <label class="flex items-center gap-2">
+                          <input type="radio" name="processing" value="bg_remove"
+                            class="h-3.5 w-3.5 rounded-full accent-brand-red" />
+                          <span>Quitar fondo</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                          <input type="radio" name="processing" value="inpaint"
+                            class="h-3.5 w-3.5 rounded-full accent-brand-red" id="processing-inpaint" />
+                          <span>Quitar marca (Inpainting - Manual)</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                          <input type="radio" name="processing" value="none"
+                            class="h-3.5 w-3.5 rounded-full accent-brand-red" checked />
+                          <span>Solo convertir (sin limpieza)</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="space-y-2">
+                      <p
+                        class="uppercase tracking-[0.18em] text-[11px] md:text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        Formato de salida
+                      </p>
+                      <div class="grid grid-cols-2 gap-2 text-[12px] md:text-xs">
+                        <button type="submit" name="action" value="convert_png"
+                          class="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-medium text-slate-800 hover:border-brand-red hover:text-brand-red dark:border-white/20 dark:bg-black/40 dark:text-slate-200 dark:hover:border-brand-red">
+                          PNG
+                        </button>
+                        <button type="submit" name="action" value="convert_jpg"
+                          class="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-medium text-slate-800 hover:border-brand-red hover:text-brand-red dark:border-white/20 dark:bg-black/40 dark:text-slate-200 dark:hover:border-brand-red">
+                          JPG
+                        </button>
+                        <button type="submit" name="action" value="convert_webp"
+                          class="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-medium text-slate-800 hover:border-brand-red hover:text-brand-red dark:border-white/20 dark:bg-black/40 dark:text-slate-200 dark:hover:border-brand-red">
+                          WEBP
+                        </button>
+                        <button type="submit" name="action" value="convert_gif"
+                          class="rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-medium text-slate-800 hover:border-brand-red hover:text-brand-red dark:border-white/20 dark:bg-black/40 dark:text-slate-200 dark:hover:border-brand-red">
+                          GIF
+                        </button>
+                        <button type="submit" name="action" value="watermark_remove_svg"
+                          class="rounded-full border border-black/10 bg-black px-3 py-2 text-xs font-medium text-cream-50 hover:bg-brand-red dark:border-white/20 col-span-2">
+                          SVG (sin marca)
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <div class="space-y-4">
+                <div
+                  class="rounded-2xl border border-black/5 bg-cream-100/60 p-4 text-xs space-y-3 dark:border-white/15 dark:bg-black/40">
+                  <p class="uppercase tracking-[0.18em] text-[10px] text-slate-500 dark:text-slate-400">
+                    Vista conceptual
+                  </p>
+
+                  <div id="svg-preview-container"
+                    class="aspect-[4/3] w-full rounded-xl border border-black/10 bg-white flex items-center justify-center overflow-hidden dark:border-white/15 dark:bg-black relative">
+                    <div id="svg-preview-inner" class="w-full h-full flex items-center justify-center p-4">
+                      <span class="opacity-80 text-center px-4 text-slate-500">Arrastra o selecciona un SVG para ver una
+                        vista previa aquí.</span>
+                    </div>
+                    <!-- Canvas para selección de área -->
+                    <canvas id="selection-canvas" class="absolute inset-0 z-20 cursor-crosshair hidden"></canvas>
+                  </div>
+
+                  <div id="inpaint-instructions" class="hidden">
+                    <p class="text-[11px] text-brand-red font-medium leading-relaxed">
+                      Modo Inpainting Activo: Arrastra sobre la imagen para seleccionar el área de la marca de agua y
+                      luego pulsa el botón "Aplicar Borrado" que aparecerá.
+                    </p>
+                    <button id="apply-inpaint-btn" type="button"
+                      class="mt-2 w-full rounded-full bg-brand-red py-2 text-xs font-bold text-white shadow-lg hover:bg-red-600 transition-colors">
+                      Aplicar Borrado (Inpainting)
+                    </button>
+                  </div>
+
+                  <p id="svg-normal-instructions"
+                    class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Esta es una previsualización rápida del archivo SVG que has seleccionado. Los cambios de
+                    procesamiento se aplicarán al descargar.
+                  </p>
                 </div>
               </div>
             </div>
-            {% endif %}
+          </div>
+          {% endif %}
 
-            <!-- Panel GIF (funcional) -->
-            {% if current_view == 'gif' %}
-            <div
-              class="rounded-3xl border border-black/5 bg-white/80 p-5 md:p-6 shadow-sm dark:border-white/10 dark:bg-black/70"
-            >
-              <div class="grid gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-                <div class="space-y-5">
-                  <div class="space-y-2">
-                    <h2 class="text-sm font-semibold tracking-tight">
-                      GIF → SVG animado (quitar fondo)
-                    </h2>
-                    <p
-                      class="text-xs md:text-sm text-slate-600 dark:text-slate-300"
-                    >
-                      Sube un GIF animado, elimina el fondo y obtén un
-                      <span class="font-semibold">SVG animado</span> con
-                      transparencia para usar en tu web.
-                    </p>
-                  </div>
+          <!-- Panel GIF (funcional) -->
+          {% if current_view == 'gif' %}
+          <div
+            class="rounded-3xl border border-black/5 bg-white/80 p-5 md:p-6 shadow-sm dark:border-white/10 dark:bg-black/70">
+            <div class="grid gap-6 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+              <div class="space-y-5">
+                <div class="space-y-2">
+                  <h2 class="text-sm font-semibold tracking-tight">
+                    GIF → SVG animado (quitar fondo)
+                  </h2>
+                  <p class="text-xs md:text-sm text-slate-600 dark:text-slate-300">
+                    Sube un GIF animado, elimina el fondo y obtén un
+                    <span class="font-semibold">SVG animado</span> con
+                    transparencia para usar en tu web.
+                  </p>
+                </div>
 
-                  {% with messages = get_flashed_messages(with_categories=true)
-                  %} {% if messages %}
-                  <div class="space-y-2">
-                    {% for category, message in messages %}
-                    <div
-                      class="rounded-xl border px-4 py-3 text-xs flex items-start gap-3
+                {% with messages = get_flashed_messages(with_categories=true)
+                %} {% if messages %}
+                <div class="space-y-2">
+                  {% for category, message in messages %}
+                  <div class="rounded-xl border px-4 py-3 text-xs flex items-start gap-3
                         {% if category == 'error' %}
                           border-brand-red/60 bg-brand-red/5 text-brand-red
                         {% else %}
                           border-emerald-500/60 bg-emerald-500/5 text-emerald-300
-                        {% endif %}"
-                    >
-                      <span
-                        class="mt-0.5 text-[10px] uppercase tracking-[0.2em] opacity-70"
-                      >
-                        {{ 'Error' if category == 'error' else 'Info' }}
-                      </span>
-                      <p class="leading-snug">{{ message }}</p>
-                    </div>
-                    {% endfor %}
+                        {% endif %}">
+                    <span class="mt-0.5 text-[10px] uppercase tracking-[0.2em] opacity-70">
+                      {{ 'Error' if category == 'error' else 'Info' }}
+                    </span>
+                    <p class="leading-snug">{{ message }}</p>
                   </div>
-                  {% endif %} {% endwith %}
-
-                  <form
-                    action="{{ url_for('gif_view') }}"
-                    method="POST"
-                    enctype="multipart/form-data"
-                    class="space-y-4"
-                  >
-                    <div
-                      class="relative group rounded-2xl border border-dashed border-black/10 bg-cream-100/60 hover:border-brand-red/60 hover:bg-cream-100 transition-all duration-200 overflow-hidden dark:border-white/20 dark:bg-black/40 dark:hover:border-brand-red/70"
-                    >
-                      <input
-                        id="file"
-                        name="file"
-                        type="file"
-                        accept="image/gif"
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                      />
-                      <div
-                        class="pointer-events-none relative px-5 py-7 flex flex-col md:flex-row md:items-center gap-4"
-                      >
-                        <div
-                          class="h-10 w-10 rounded-xl bg-black flex items-center justify-center text-cream-50 text-xs font-medium dark:bg-brand-red"
-                        >
-                          GIF
-                        </div>
-                        <div class="space-y-1">
-                          <p class="text-sm font-medium">
-                            Arrastra y suelta tu GIF aquí
-                            <span
-                              class="text-slate-500 font-normal dark:text-slate-300"
-                              >o haz clic para seleccionarlo</span
-                            >
-                          </p>
-                          <p
-                            class="text-[11px] text-slate-500 dark:text-slate-400"
-                          >
-                            Archivos soportados:
-                            <span class="font-semibold">.gif</span> animados. El
-                            fondo debe ser lo más uniforme posible.
-                          </p>
-                          <p
-                            id="file-name"
-                            class="text-[11px] text-brand-red font-medium hidden"
-                          >
-                            <!-- Aquí se mostrará el nombre del archivo -->
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between"
-                    >
-                      <div class="flex gap-2">
-                        <button
-                          type="submit"
-                          class="inline-flex items-center justify-center gap-2 rounded-full bg-black px-5 py-2 text-xs font-medium text-cream-50 hover:bg-brand-red focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2 focus:ring-offset-cream-50 dark:bg-brand-red dark:hover:bg-red-600 dark:focus:ring-offset-black"
-                        >
-                          <span>Quitar fondo y convertir</span>
-                        </button>
-                      </div>
-                      <p
-                        class="text-[11px] text-slate-500 max-w-xs dark:text-slate-400"
-                      >
-                        Obtendrás un archivo
-                        <span class="font-semibold">SVG animado</span> listo
-                        para descargar.
-                      </p>
-                    </div>
-                  </form>
+                  {% endfor %}
                 </div>
+                {% endif %} {% endwith %}
 
-                <div class="space-y-4">
+                <form action="{{ url_for('gif_view') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                   <div
-                    class="rounded-2xl border border-black/5 bg-cream-100/60 p-4 text-xs space-y-3 dark:border-white/15 dark:bg-black/40"
-                  >
-                    <p
-                      class="uppercase tracking-[0.18em] text-[10px] text-slate-500 dark:text-slate-400"
-                    >
-                      Vista conceptual
-                    </p>
-
-                    {% if svg_markup %}
-                    <!-- Vista previa real del SVG generado -->
-                    <div
-                      class="aspect-[4/3] w-full rounded-xl border border-black/10 bg-white flex items-center justify-center overflow-hidden dark:border-white/15 dark:bg-black"
-                    >
+                    class="relative group rounded-2xl border border-dashed border-black/10 bg-cream-100/60 hover:border-brand-red/60 hover:bg-cream-100 transition-all duration-200 overflow-hidden dark:border-white/20 dark:bg-black/40 dark:hover:border-brand-red/70">
+                    <input id="file" name="file" type="file" accept="image/gif"
+                      class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                    <div class="pointer-events-none relative px-5 py-7 flex flex-col md:flex-row md:items-center gap-4">
                       <div
-                        class="w-full h-full flex items-center justify-center"
-                        aria-label="Vista previa del SVG generado"
-                      >
-                        {{ svg_markup | safe }}
+                        class="h-10 w-10 rounded-xl bg-black flex items-center justify-center text-cream-50 text-xs font-medium dark:bg-brand-red">
+                        GIF
+                      </div>
+                      <div class="space-y-1">
+                        <p class="text-sm font-medium">
+                          Arrastra y suelta tu GIF aquí
+                          <span class="text-slate-500 font-normal dark:text-slate-300">o haz clic para
+                            seleccionarlo</span>
+                        </p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                          Archivos soportados:
+                          <span class="font-semibold">.gif</span> animados. El
+                          fondo debe ser lo más uniforme posible.
+                        </p>
+                        <p id="file-name" class="text-[11px] text-brand-red font-medium hidden">
+                          <!-- Aquí se mostrará el nombre del archivo -->
+                        </p>
                       </div>
                     </div>
-                    <p
-                      class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed"
-                    >
-                      Vista generada a partir de tu GIF. Si la animación se ve
-                      bien aquí, se verá igual cuando la uses en tu web.
-                    </p>
+                  </div>
 
-                    {% if svg_download_b64 %}
-                    <a
-                      href="data:image/svg+xml;base64,{{ svg_download_b64 }}"
-                      download="animacion_sin_fondo.svg"
-                      class="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-black px-4 py-2 text-[11px] font-medium text-cream-50 hover:bg-brand-red dark:border-white/20"
-                    >
-                      Descargar SVG
-                    </a>
-                    {% endif %}
-
-                    {% else %}
-                    <!-- Estado inicial (sin archivo convertido) -->
-                    <div
-                      class="aspect-[4/3] w-full rounded-xl border border-black/10 bg-gradient-to-br from-black via-slate-900 to-black flex items-center justify-center text-[11px] text-slate-200 dark:border-white/15"
-                    >
-                      <span class="opacity-80 text-center px-4"
-                        >Aquí verás la vista previa del SVG animado una vez que
-                        conviertas tu GIF.</span
-                      >
+                  <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
+                    <div class="flex gap-2">
+                      <button type="submit"
+                        class="inline-flex items-center justify-center gap-2 rounded-full bg-black px-5 py-2 text-xs font-medium text-cream-50 hover:bg-brand-red focus:outline-none focus:ring-2 focus:ring-brand-red focus:ring-offset-2 focus:ring-offset-cream-50 dark:bg-brand-red dark:hover:bg-red-600 dark:focus:ring-offset-black">
+                        <span>Quitar fondo y convertir</span>
+                      </button>
                     </div>
-                    <p
-                      class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed"
-                    >
-                      Sube un GIF en el panel de la izquierda y pulsa “Quitar
-                      fondo y convertir” para generar la previsualización.
+                    <p class="text-[11px] text-slate-500 max-w-xs dark:text-slate-400">
+                      Obtendrás un archivo
+                      <span class="font-semibold">SVG animado</span> listo
+                      para descargar.
                     </p>
-                    {% endif %}
                   </div>
-                </div>
+                </form>
               </div>
-            </div>
-            {% endif %}
 
-            <!-- Panel PNG -->
-            {% if current_view == 'png' %}
-            <div
-              class="rounded-3xl border border-black/5 bg-white/80 p-5 md:p-6 shadow-sm dark:border-white/10 dark:bg-black/70"
-            >
-              <div class="flex flex-col md:flex-row gap-6 md:items-start">
-                <div class="space-y-3 flex-1">
-                  <h2 class="text-sm font-semibold tracking-tight">
-                    Trabajar con PNG
-                  </h2>
-                  <p
-                    class="text-xs md:text-sm text-slate-600 dark:text-slate-300"
-                  >
-                    Pensado para imágenes con transparencia y alta calidad. Aquí
-                    podrás quitar el fondo de un PNG o convertirlo a otros
-                    formatos.
-                  </p>
-                  <div class="flex flex-wrap gap-2 text-[11px]">
-                    <span
-                      class="rounded-full border border-black/10 px-3 py-1 text-slate-600 dark:border-white/20 dark:text-slate-300"
-                      >Quitar fondo (PNG)</span
-                    >
-                    <span
-                      class="rounded-full border border-black/10 px-3 py-1 text-slate-600 dark:border-white/20 dark:text-slate-300"
-                      >Convertir a SVG / GIF</span
-                    >
-                  </div>
-                </div>
+              <div class="space-y-4">
                 <div
-                  class="flex flex-col gap-2 text-[11px] text-slate-500 dark:text-slate-400"
-                >
-                  <p class="uppercase tracking-[0.18em]">
-                    Opciones rápidas
+                  class="rounded-2xl border border-black/5 bg-cream-100/60 p-4 text-xs space-y-3 dark:border-white/15 dark:bg-black/40">
+                  <p class="uppercase tracking-[0.18em] text-[10px] text-slate-500 dark:text-slate-400">
+                    Vista conceptual
                   </p>
-                  <div class="flex gap-2">
-                    <button
-                      type="button"
-                      class="flex-1 rounded-full border border-black/10 bg-cream-100 px-3 py-2 text-xs font-medium text-slate-800 hover:border-brand-red hover:text-brand-red dark:border-white/20 dark:bg-black/40 dark:text-slate-200 dark:hover:border-brand-red"
-                    >
-                      Quitar fondo
-                    </button>
-                    <button
-                      type="button"
-                      class="flex-1 rounded-full border border-black/10 bg-black px-3 py-2 text-xs font-medium text-cream-50 hover:bg-brand-red dark:border-white/10"
-                    >
-                      Convertir
-                    </button>
+
+                  {% if svg_markup %}
+                  <!-- Vista previa real del SVG generado -->
+                  <div
+                    class="aspect-[4/3] w-full rounded-xl border border-black/10 bg-white flex items-center justify-center overflow-hidden dark:border-white/15 dark:bg-black">
+                    <div class="w-full h-full flex items-center justify-center"
+                      aria-label="Vista previa del SVG generado">
+                      {{ svg_markup | safe }}
+                    </div>
                   </div>
-                  <p class="text-[10px]">
-                    (Interfaz preparada para PNG. Puedes conectar aquí tus
-                    endpoints de conversión cuando los tengas listos.)
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Vista generada a partir de tu GIF. Si la animación se ve
+                    bien aquí, se verá igual cuando la uses en tu web.
                   </p>
+
+                  {% if svg_download_b64 %}
+                  <a href="data:image/svg+xml;base64,{{ svg_download_b64 }}" download="animacion_sin_fondo.svg"
+                    class="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-black px-4 py-2 text-[11px] font-medium text-cream-50 hover:bg-brand-red dark:border-white/20">
+                    Descargar SVG
+                  </a>
+                  {% endif %}
+
+                  {% else %}
+                  <!-- Estado inicial (sin archivo convertido) -->
+                  <div
+                    class="aspect-[4/3] w-full rounded-xl border border-black/10 bg-gradient-to-br from-black via-slate-900 to-black flex items-center justify-center text-[11px] text-slate-200 dark:border-white/15">
+                    <span class="opacity-80 text-center px-4">Aquí verás la vista previa del SVG animado una vez que
+                      conviertas tu GIF.</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Sube un GIF en el panel de la izquierda y pulsa “Quitar
+                    fondo y convertir” para generar la previsualización.
+                  </p>
+                  {% endif %}
                 </div>
               </div>
             </div>
-            {% endif %}
-          </section>
-        </div>
-      </main>
+          </div>
+          {% endif %}
 
-      <footer
-        class="border-t border-black/5 bg-cream-50/90 dark:border-white/10 dark:bg-black/90"
-      >
-        <div
-          class="max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400"
-        >
-          <p>Construida con Python, Flask y Tailwind CSS.</p>
-          <p class="flex items-center gap-1">
-            <span class="h-1.5 w-1.5 rounded-full bg-brand-red"></span>
-            Desarrollada por <span class="font-medium">Kevin Ruiz</span>
-          </p>
-        </div>
-      </footer>
-    </div>
+          <!-- Panel PNG -->
+          {% if current_view == 'png' %}
+          <div
+            class="rounded-3xl border border-black/5 bg-white/80 p-5 md:p-6 shadow-sm dark:border-white/10 dark:bg-black/70">
+            <div class="flex flex-col md:flex-row gap-6 md:items-start">
+              <div class="space-y-3 flex-1">
+                <h2 class="text-sm font-semibold tracking-tight">
+                  Trabajar con PNG
+                </h2>
+                <p class="text-xs md:text-sm text-slate-600 dark:text-slate-300">
+                  Pensado para imágenes con transparencia y alta calidad. Aquí
+                  podrás quitar el fondo de un PNG o convertirlo a otros
+                  formatos.
+                </p>
+                <div class="flex flex-wrap gap-2 text-[11px]">
+                  <span
+                    class="rounded-full border border-black/10 px-3 py-1 text-slate-600 dark:border-white/20 dark:text-slate-300">Quitar
+                    fondo (PNG)</span>
+                  <span
+                    class="rounded-full border border-black/10 px-3 py-1 text-slate-600 dark:border-white/20 dark:text-slate-300">Convertir
+                    a SVG / GIF</span>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                <p class="uppercase tracking-[0.18em]">
+                  Opciones rápidas
+                </p>
+                <div class="flex gap-2">
+                  <button type="button"
+                    class="flex-1 rounded-full border border-black/10 bg-cream-100 px-3 py-2 text-xs font-medium text-slate-800 hover:border-brand-red hover:text-brand-red dark:border-white/20 dark:bg-black/40 dark:text-slate-200 dark:hover:border-brand-red">
+                    Quitar fondo
+                  </button>
+                  <button type="button"
+                    class="flex-1 rounded-full border border-black/10 bg-black px-3 py-2 text-xs font-medium text-cream-50 hover:bg-brand-red dark:border-white/10">
+                    Convertir
+                  </button>
+                </div>
+                <p class="text-[10px]">
+                  (Interfaz preparada para PNG. Puedes conectar aquí tus
+                  endpoints de conversión cuando los tengas listos.)
+                </p>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </section>
+      </div>
+    </main>
 
-    <script>
-      // Tema claro / oscuro
-      const root = document.documentElement;
-      const themeToggle = document.getElementById("theme-toggle");
+    <footer class="border-t border-black/5 bg-cream-50/90 dark:border-white/10 dark:bg-black/90">
+      <div
+        class="max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+        <p>Construida con Python, Flask y Tailwind CSS.</p>
+        <p class="flex items-center gap-1">
+          <span class="h-1.5 w-1.5 rounded-full bg-brand-red"></span>
+          Desarrollada por <span class="font-medium">Kevin Ruiz</span>
+        </p>
+      </div>
+    </footer>
+  </div>
 
-      const storedTheme = localStorage.getItem("theme");
-      if (
-        storedTheme === "dark" ||
-        (!storedTheme &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      ) {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
+  <script>
+    // Tema claro / oscuro
+    const root = document.documentElement;
+    const themeToggle = document.getElementById("theme-toggle");
 
-      if (themeToggle) {
-        themeToggle.addEventListener("click", () => {
-          const isDark = root.classList.toggle("dark");
-          localStorage.setItem("theme", isDark ? "dark" : "light");
-        });
-      }
+    const storedTheme = localStorage.getItem("theme");
+    if (
+      storedTheme === "dark" ||
+      (!storedTheme &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
 
-      // Mostrar nombre del archivo seleccionado (panel GIF)
-      const fileInput = document.getElementById("file");
-      const fileNameLabel = document.getElementById("file-name");
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+        const isDark = root.classList.toggle("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+      });
+    }
 
-      if (fileInput && fileNameLabel) {
-        fileInput.addEventListener("change", (event) => {
-          const file = event.target.files && event.target.files[0];
-          if (file) {
-            fileNameLabel.textContent = `Archivo seleccionado: ${file.name}`;
-            fileNameLabel.classList.remove("hidden");
-          } else {
-            fileNameLabel.textContent = "";
-            fileNameLabel.classList.add("hidden");
+    // Mostrar nombre del archivo y vista previa (panel SVG)
+    const svgFileInput = document.getElementById("svg-file");
+    const svgFileNameLabel = document.getElementById("svg-file-name");
+    const svgPreviewInner = document.getElementById("svg-preview-inner");
+
+    if (svgFileInput && svgFileNameLabel) {
+      svgFileInput.addEventListener("change", (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (file) {
+          svgFileNameLabel.textContent = `Archivo seleccionado: ${file.name}`;
+          svgFileNameLabel.classList.remove("hidden");
+
+          // Leer y mostrar vista previa
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            if (svgPreviewInner) {
+              svgPreviewInner.innerHTML = e.target.result;
+              // Asegurar que el SVG use el espacio disponible
+              const svgElement = svgPreviewInner.querySelector("svg");
+              if (svgElement) {
+                svgElement.setAttribute("width", "100%");
+                svgElement.setAttribute("height", "100%");
+                svgElement.style.maxWidth = "100%";
+                svgElement.style.maxHeight = "100%";
+              }
+            }
+          };
+          reader.readAsText(file);
+        } else {
+          svgFileNameLabel.textContent = "";
+          svgFileNameLabel.classList.add("hidden");
+          if (svgPreviewInner) {
+            svgPreviewInner.innerHTML = '<span class="opacity-80 text-center px-4 text-slate-500">Arrastra o selecciona un SVG para ver una vista previa aquí.</span>';
           }
-        });
+        }
+      });
+    }
+
+    // Mostrar nombre del archivo seleccionado (panel GIF)
+    const fileInput = document.getElementById("file");
+    const fileNameLabel = document.getElementById("file-name");
+
+    if (fileInput && fileNameLabel) {
+      fileInput.addEventListener("change", (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (file) {
+          fileNameLabel.textContent = `Archivo seleccionado: ${file.name}`;
+          fileNameLabel.classList.remove("hidden");
+        } else {
+          fileNameLabel.textContent = "";
+          fileNameLabel.classList.add("hidden");
+        }
+      });
+    }
+
+    // Lógica de Inpainting / Selección de Área
+    const inpaintRadio = document.getElementById("processing-inpaint");
+    const canvas = document.getElementById("selection-canvas");
+    const inpaintInstructions = document.getElementById("inpaint-instructions");
+    const normalInstructions = document.getElementById("svg-normal-instructions");
+    const applyInpaintBtn = document.getElementById("apply-inpaint-btn");
+    const ctx = canvas.getContext("2d");
+
+    let isDrawing = false;
+    let startX, startY, currentX, currentY;
+    let selectionRect = null;
+
+    function updateInpaintUI() {
+      if (inpaintRadio.checked && svgFileInput.files.length > 0) {
+        canvas.classList.remove("hidden");
+        inpaintInstructions.classList.remove("hidden");
+        normalInstructions.classList.add("hidden");
+        resizeCanvas();
+      } else {
+        canvas.classList.add("hidden");
+        inpaintInstructions.classList.add("hidden");
+        normalInstructions.classList.remove("hidden");
       }
-    </script>
-  </body>
+    }
+
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+      drawSelection();
+    }
+
+    document.getElementsByName("processing").forEach(radio => {
+      radio.addEventListener("change", updateInpaintUI);
+    });
+
+    canvas.addEventListener("mousedown", e => {
+      isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      startX = e.clientX - rect.left;
+      startY = e.clientY - rect.top;
+      selectionRect = null;
+    });
+
+    canvas.addEventListener("mousemove", e => {
+      if (!isDrawing) return;
+      const rect = canvas.getBoundingClientRect();
+      currentX = e.clientX - rect.left;
+      currentY = e.clientY - rect.top;
+      drawSelection();
+    });
+
+    canvas.addEventListener("mouseup", () => {
+      isDrawing = false;
+      selectionRect = {
+        x: Math.min(startX, currentX),
+        y: Math.min(startY, currentY),
+        w: Math.abs(currentX - startX),
+        h: Math.abs(currentY - startY)
+      };
+    });
+
+    function drawSelection() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (isDrawing || selectionRect) {
+        ctx.strokeStyle = "#ef4444";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        const x = isDrawing ? Math.min(startX, currentX) : selectionRect.x;
+        const y = isDrawing ? Math.min(startY, currentY) : selectionRect.y;
+        const w = isDrawing ? Math.abs(currentX - startX) : selectionRect.w;
+        const h = isDrawing ? Math.abs(currentY - startY) : selectionRect.h;
+        ctx.strokeRect(x, y, w, h);
+        ctx.fillStyle = "rgba(239, 68, 68, 0.2)";
+        ctx.fillRect(x, y, w, h);
+      }
+    }
+
+    applyInpaintBtn.addEventListener("click", async () => {
+      if (!selectionRect) {
+        alert("Por favor, selecciona primero el área de la marca de agua arrastrando el ratón sobre la imagen.");
+        return;
+      }
+
+      const file = svgFileInput.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+
+      // Calcular coordenadas relativas al tamaño real de la previsualización
+      const svgElem = svgPreviewInner.querySelector("svg");
+      if (!svgElem) {
+        alert("No se pudo encontrar la imagen en la vista previa.");
+        return;
+      }
+
+      const previewRect = svgElem.getBoundingClientRect();
+
+      // Ajustamos las coordenadas:
+      // El usuario dibuja en el canvas (que cubre todo el container), 
+      // pero la imagen puede estar centrada y no ocupar todo el canvas.
+      const adjustedX = selectionRect.x - (previewRect.left - canvas.getBoundingClientRect().left);
+      const adjustedY = selectionRect.y - (previewRect.top - canvas.getBoundingClientRect().top);
+
+      formData.append("x", adjustedX);
+      formData.append("y", adjustedY);
+      formData.append("w", selectionRect.w);
+      formData.append("h", selectionRect.h);
+      formData.append("canvasWidth", previewRect.width);
+      formData.append("canvasHeight", previewRect.height);
+
+      applyInpaintBtn.disabled = true;
+      applyInpaintBtn.textContent = "Procesando...";
+
+      try {
+        const response = await fetch("/inpaint", {
+          method: "POST",
+          body: formData
+        });
+
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "svg_sin_marca_inpainted.png";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } else {
+          alert("Error al procesar el Inpainting.");
+        }
+      } catch (err) {
+        alert("Error de conexión.");
+      } finally {
+        applyInpaintBtn.disabled = false;
+        applyInpaintBtn.textContent = "Aplicar Borrado (Inpainting)";
+      }
+    });
+  </script>
+</body>
+
 </html>
-
-

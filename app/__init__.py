@@ -9,6 +9,8 @@ from flask import Flask, render_template, request, send_file, redirect, url_for,
 from PIL import Image
 import imageio.v2 as imageio
 import cairosvg
+import cv2
+import numpy as np
 
 # En Vercel sólo se puede escribir en /tmp, así que usamos esa ruta para subidas temporales
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -157,9 +159,11 @@ def gif_to_animated_svg(gif_path: Path) -> bytes:
         values_list.append("0")
         values_str = ";".join(values_list)
 
+        base_opacity = "1" if idx == 0 else "0"
+
         svg_parts.append(
             f'<image id="f{idx}" href="data:image/png;base64,{png_b64}" '
-            f'width="{width}" height="{height}" opacity="0">'
+            f'width="{width}" height="{height}" opacity="{base_opacity}">'
             f'<animate attributeName="opacity" dur="{total_duration}s" '
             f'repeatCount="indefinite" keyTimes="{key_times_str}" '
             f'values="{values_str}" calcMode="discrete" />'
@@ -319,11 +323,24 @@ def create_app() -> Flask:
                 download_name = "svg_convertido.png"
 
             buf = io.BytesIO()
-            # Para JPEG no se admite transparencia, convertimos a RGB
-            save_img = img
+            # Para cada formato manejamos la transparencia de forma óptima
             if output_format == "JPEG":
                 save_img = img.convert("RGB")
-            save_img.save(buf, format=output_format)
+                save_img.save(buf, format="JPEG", quality=95)
+            elif output_format == "GIF":
+                # CairoSVG + Pillow: La forma robusta de evitar "archivos vacíos" en GIFs transparentes
+                # Extraemos el canal alpha para usarlo como máscara de transparencia
+                alpha = img.getchannel('A')
+                # Convertimos a paleta de 256 colores dejando uno libre para transparencia (índice 255)
+                temp_img = img.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=255)
+                # Ponemos el color transparente donde el alpha sea bajo
+                mask = Image.eval(alpha, lambda a: 255 if a <= 128 else 0)
+                temp_img.paste(255, mask)
+                temp_img.save(buf, format="GIF", transparency=255, disposal=2)
+            else:
+                # PNG y WEBP admiten RGBA directamente
+                img.save(buf, format=output_format)
+            
             buf.seek(0)
 
             return send_file(
@@ -335,6 +352,88 @@ def create_app() -> Flask:
 
         # Vista SVG (formulario y opciones)
         return render_template("index.html", current_view="svg")
+
+    @app.route("/inpaint", methods=["POST"])
+    def inpaint_view():
+        file = request.files.get("file")
+        if not file or file.filename == "":
+            return "No file", 400
+
+        # Coordenadas relativas del canvas
+        try:
+            canvas_x = float(request.form.get("x", 0))
+            canvas_y = float(request.form.get("y", 0))
+            canvas_w = float(request.form.get("w", 0))
+            canvas_h = float(request.form.get("h", 0))
+            canvas_width = float(request.form.get("canvasWidth", 0))
+            canvas_height = float(request.form.get("canvasHeight", 0))
+        except ValueError:
+            return "Invalid coordinates", 400
+
+        svg_bytes = file.read()
+        
+        # 1. Rasterizar con un tamaño base controlado para evitar inconsistencias
+        try:
+            # Forzamos un renderizado de buena calidad (máximo 1200px)
+            # CairoSVG usará el viewBox por defecto si no se especifica.
+            png_bytes = cairosvg.svg2png(bytestring=svg_bytes)
+        except Exception as e:
+            return f"Error processing SVG: {e}", 502
+
+        # 2. Decodificar y validar imagen
+        nparr = np.frombuffer(png_bytes, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_UNCHANGED)
+
+        if img is None or img.size == 0:
+            return "Failed to render image correctly", 500
+
+        img_h, img_w = img.shape[:2]
+
+        # 3. Mapeo Dinámico de Coordenadas:
+        # El canvas del frontend escala la imagen para que quepa en el visor.
+        # Necesitamos la escala real (Imagen Real / Canvas Visual)
+        if canvas_width > 0 and canvas_height > 0:
+            scale_x = img_w / canvas_width
+            scale_y = img_h / canvas_height
+            
+            x = int(canvas_x * scale_x)
+            y = int(canvas_y * scale_y)
+            w = int(canvas_w * scale_x)
+            h = int(canvas_h * scale_y)
+        else:
+            x, y, w, h = int(canvas_x), int(canvas_y), int(canvas_w), int(canvas_h)
+
+        # Validar límites para evitar errores de OpenCV
+        x = max(0, min(x, img_w - 1))
+        y = max(0, min(y, img_h - 1))
+        w = max(1, min(w, img_w - x))
+        h = max(1, min(h, img_h - y))
+
+        # 4. Inpainting Robusto
+        mask = np.zeros((img_h, img_w), np.uint8)
+        mask[y:y+h, x:x+w] = 255
+
+        # Separar canales para preservar transparencia
+        if img.shape[2] == 4:
+            bgr = img[:, :, :3]
+            alpha = img[:, :, 3]
+            # Algoritmo de Inpainting solo en color
+            inpainted_bgr = cv2.inpaint(bgr, mask, 3, cv2.INPAINT_TELEA)
+            # Recombinar con el alpha original intacto
+            result = cv2.merge([inpainted_bgr[:,:,0], inpainted_bgr[:,:,1], inpainted_bgr[:,:,2], alpha])
+        else:
+            result = cv2.inpaint(img, mask, 3, cv2.INPAINT_TELEA)
+
+        # 5. Exportar PNG de alta calidad
+        _, buffer = cv2.imencode('.png', result, [cv2.IMWRITE_PNG_COMPRESSION, 9])
+        io_buf = io.BytesIO(buffer)
+
+        return send_file(
+            io_buf,
+            mimetype="image/png",
+            as_attachment=True,
+            download_name="svg_resultado_limpio.png"
+        )
 
     @app.route("/png", methods=["GET"])
     def png_view():
