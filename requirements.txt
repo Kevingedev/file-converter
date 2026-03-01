@@ -1,0 +1,6 @@
+flask
+pillow
+imageio[ffmpeg]
+cairosvg
+
+
